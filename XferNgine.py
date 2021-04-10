@@ -1,38 +1,51 @@
 from utils import *
 from datetime import datetime
-
-json = {"name": "the matrix", "age": 20, "metadata": {"dateWatched": str(datetime.now())}}
-xml = JsonXml(json, 'movie')
+from fileIO import *
 
 
 
-xmlContent = """<details class="4b" count="1" gender="boy">
-    <name type="firstname">John</name>/
-    <age>13</age>
-    <hobby>Coin collection</hobby>
-    <hobby>Stamp collection</hobby>
-    <address>
-        <country>USA</country>
-        <state>CA</state>
-    </address>
-</details>
-<details empty="True"/>
-<details/>
-<details class="4a" count="2" gender="girl">
-    <name type="firstname">Samantha</name>
-    <age>13</age>
-    <hobby>Fishing</hobby>
-    <hobby>Chess</hobby>
-    <address current="no">
-        <country>Australia</country>
-        <state>NSW</state>
-    </address>
-</details>"""
 
+xmlContent = """<breakfast_menu>
+<food>
+<name>Belgian Waffles</name>
+<price>$5.95</price>
+<description>Two of our famous Belgian Waffles with plenty of real maple syrup</description>
+<calories>650</calories>
+</food>
+<food>
+<name>Strawberry Belgian Waffles</name>
+<price>$7.95</price>
+<description>Light Belgian waffles covered with strawberries and whipped cream</description>
+<calories>900</calories>
+</food>
+<food>
+<name>Berry-Berry Belgian Waffles</name>
+<price>$8.95</price>
+<description>Light Belgian waffles covered with an assortment of fresh berries and whipped cream</description>
+<calories>900</calories>
+</food>
+<food>
+<name>French Toast</name>
+<price>$4.50</price>
+<description>Thick slices made from our homemade sourdough bread</description>
+<calories>600</calories>
+</food>
+<food>
+<name>Homestyle Breakfast</name>
+<price>$6.95</price>
+<description>Two eggs, bacon or sausage, toast, and our ever-popular hash browns</description>
+<calories>950</calories>
+</food>
+</breakfast_menu>"""
+
+jsonContent = XmlJson(xmlContent)
 # print(xml, end='\n\n')
-print(XmlJson(xmlContent))
-print(XmlJsonv2(xmlContent))
-# print(XmlJsonWithAttribs(xmlContent))
-# print(JsonMessagePack(json))
-print(JsonCSV(json))
-# print(XmlJson(xmlContent))
+
+# createJson(XmlJson(xmlContent), 'test')
+
+# createJson(XmlJsonWithAttribs(xmlContent), 'test')
+
+createCSV(JsonCSV(jsonContent), 'test')
+# createCSV(XmlCSV(xmlContent), 'test')
+
+# createMessagePack(JsonMessagePack(json), 'test')
