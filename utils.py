@@ -1,105 +1,8 @@
-'''
-Utility APIs for XferNgine
-Currently Supports the following Conversions
-__________________________________________________________
-|   From        | To             |  APIName               |\n
-----------------| ----------------------------------------
-| JSON          | XML Document   |  JsonXML               |\n
-| XML Document  | JSON           |  XMLJson               |\n
-| Protobuf      | XML            |  NotYetImplemented     |\n
-| XML           | Protobuf       |  NotYetImplemented     |\n
-| ProtoBuf      | JSON           |  NotYetImplemented     |\n
-| JSON          | Protobuf       |  NotYetImplemented     |\n
-| CSV           | JSON           |  NotYetImplemented     |\n
-| JSON          | CSV            |  JsonCSV               |\n
-| MessagePack   | JSON           |  NotYetImplemented     |\n
-| MessagePack   | XML            |  NotYetImplemented     |\n
-| YAML          | JSON           |  NotYetImplemented     |\n
-| JSON          | YAML           |  NotYetImplemented     |\n
-| YAML          | XML            |  NotYetImplemented     |\n
-| XML           | YAML           |  NotYetImplemented     |\n
-| JSON          | MessagePack    |  JsonMessagePack       |\n
-| XML           | MessagePack    |  NotYetImplemented     |\n
-----------------------------------------------------------
-'''
-
 #region---------------Imports-------------------------------
-from typing import Union
-import re
-import json
-from xml.etree import ElementTree as ET
-from xml.dom import minidom
-import msgpack
+
 from copy import deepcopy
-import pandas
-import ast
-import xmltodict
-
-#endregion---------------Imports-----------------------------
-
-#region---------------FromJsonAPIs-------------------------------
-def JsonXml(data: Union[dict, bool], rootElement='root'):
-    '''
-    Converts from Json to XML\n
-    @param data : json as dictionary or json key value pair\n
-    @param rootElement : Tag name to be added as xml root Element\n
-                         Default is "root"\n
-    Returns XML as string
-    '''
-    node = f'<{rootElement} type="{type(data).__name__}">'
-    if isinstance(data, dict):
-        for key, value in data.items():
-            node += JsonXml(value, key)
-
-    elif isinstance(data, (list, tuple, set)):
-        for item in data:
-            node += JsonXml(item, 'item')
-
-    else:
-        node += f'{str(data)}'
-
-    node += f'</{rootElement}>'
-    return node
-
-def JsonMessagePack(data):
-    """
-        Converts Json to MessagePack.\n
-        @param data: json as dictionary/json.\n
-        Returns MessagePack
-    """
-    return msgpack.packb(data)
-
-def JsonCSV(json):
-    """
-        Converts Json to CSV.\n
-        @param json: json as dictionary/json.\n
-        Returns CSV
-    """
-    return pandas.DataFrame(flatten_json(json))
-#endregion---------------FromJsonAPIs-----------------------------
-
-#region---------------FromXMLAPIs-------------------------------
-
-def XmlJsonWithAttribs(xml):
-    """
-        Converts XMl to Json.\n
-        @param xml: xml as string.\n
-        @param flag: defaulted to 0 for internal puposes only, don't pass one.\n
-        Returns Json with it's included Attributes 
-            Eg : <name type="firstname">Jonh</name> as {'name': [{'@attributes': [{'type': 'firstname'}]}, {'$values': 'John'}]}
-    """
-    singleQuotedJson = XmlJsonWithAttribsHelper(xml)
-    return json.dumps(singleQuotedJson)
-
-def XmlCSV(xml):
-   
-    jsonXML = xmltodict.parse(xml)
-    return JsonCSV(jsonXML)
-
-def XmlJson(element):
-    return json.dumps(parse_element(minidom.parseString(element.replace('\n',''))))
-
-#endregion---------------FromXMLAPIs-------------------------------
+import re
+#endregion---------------Imports-------------------------------
 
 #region---------------------HelperAPIs-----------------------------
 
@@ -138,9 +41,9 @@ def XmlJsonWithAttribsHelper(xml):
     if len(res)>=1:
         attreg="(?P<avr>\S+?)(?:(?:=(?P<quote>['\"])(?P<avl>.*?)(?P=quote))|(?:=(?P<avl1>.*?)(?:\s|$))|(?P<avl2>[\s]+)|$)"
         if len(res)>1:
-            return [{i[0]:[{"@attributes":[{j[0]:(j[2] or j[3] or j[4])} for j in re.findall(attreg,i[1].strip())]},{"$values":XmlJsonWithAttribs(i[2])}]} for i in res]
+            return [{i[0]:[{"@attributes":[{j[0]:(j[2] or j[3] or j[4])} for j in re.findall(attreg,i[1].strip())]},{"$values":XmlJsonWithAttribsHelper(i[2])}]} for i in res]
         else:
-            return {res[0]:[{"@attributes":[{j[0]:(j[2] or j[3] or j[4])} for j in re.findall(attreg,res[1].strip())]},{"$values":XmlJsonWithAttribs(res[2])}]}
+            return {res[0]:[{"@attributes":[{j[0]:(j[2] or j[3] or j[4])} for j in re.findall(attreg,res[1].strip())]},{"$values":XmlJsonWithAttribsHelper(res[2])}]}
     else:
         return xml.strip()
 
