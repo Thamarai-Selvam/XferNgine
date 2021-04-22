@@ -10,6 +10,11 @@ def createJson(jsonContent, fileName):
 def createCSV(csvContent, fileName):
     csvContent.to_csv(str(fileName+'.csv'))
 
+def createCSV2(csvContent, fileName):
+    with open(str(fileName+'.csv'), 'w') as opFile:
+            opFile.write(str(csvContent))
+            return 'Created CSV Successfully'
+
 def createMessagePack(msgPackContent, fileName):
     with open(str(fileName+'.msgpack'), 'wb') as opFile:
         packed = msgpack.packb(msgPackContent)

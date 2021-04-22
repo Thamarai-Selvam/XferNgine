@@ -1,7 +1,7 @@
 from XferNgine import *
 from datetime import datetime
 from fileIO import *
-
+from dbConverter import *
 
 xmlContent = """<breakfast_menu>
 <food>
@@ -86,25 +86,40 @@ message Thing {
 }
 """
 jsonContent = XmlJson(xmlContent)
-print(xmlContent, end='\n\n')
+# print(xmlContent, end='\n\n')
 
-createJson(XmlJson(xmlContent), 'testFiles\\test')
+createJson(XmlJson(xmlContent), 'testFiles\\XmlJson')
 
-createJson(XmlJsonWithAttribs(xmlContent), 'testFiles\\test')
+createJson(XmlJsonWithAttribs(xmlContent), 'testFiles\\XmlJsonWithAttribs')
 
-createCSV(JsonCSV(jsonContentDF), 'testFiles\\test')
-createCSV(XmlCSV(xmlContent), 'testFiles\\test')
-createXML(JsonXml(jsonContentDF), 'testFiles\\test')
+createCSV(JsonCSV(jsonContentDF), 'testFiles\\JsonCSV')
+createCSV(XmlCSV(xmlContent), 'testFiles\\XmlCSV')
+createXML(JsonXml(jsonContentDF), 'testFiles\\JsonXml')
 
-createMessagePack(JsonMessagePack(jsonContent), 'testFiles\\test')
+createMessagePack(JsonMessagePack(jsonContentDF), 'testFiles\\JsonMessagePack')
 
-createYaml(JsonYaml(jsonContentDF), 'testFiles\\test')
-createJson(YamlJson(yamlContent), 'testFiles\\test')
+createYaml(JsonYaml(jsonContentDF), 'testFiles\\JsonYaml')
+createJson(YamlJson(yamlContent), 'testFiles\\YamlJson')
 # createProtoBuf(JsonProtoBuf(jsonContentDF), 'testFiles\\test')
 # createJson(ProtoBuftoJson(protoMessage), 'testFiles\\test')
 
-createYaml(XmlYaml(xmlContent), 'testFiles\\test')
+createYaml(XmlYaml(xmlContent), 'testFiles\\XmlYaml')
 
-createXML(YamlXml(yamlContent), 'testFiles\\test')
-createMessagePack(XmlMessagePack(xmlContent), 'testFiles\\test')
-createXML(readMessagePack('testFiles\\test.msgpack'), 'testFiles\\test')
+createXML(YamlXml(yamlContent), 'testFiles\\YamlXml')
+createMessagePack(XmlMessagePack(xmlContent), 'testFiles\\XmlMessagePack')
+# createXML(readMessagePack('testFiles\\test.msgpack'), 'testFiles\\test')
+
+## TESTING EXPERIMENTAL FEATURES
+
+## FEATURE 01
+## CONVERT CSV TO DB FILE
+
+# sqliter('testFiles\\XmlCSV.csv', 'opDB')
+
+csvToDb('testFiles\\XmlCSV.csv', 'XMLCSVDB')
+
+dbToCsv('XMLCSVDB.db', 'testFiles\\XMLCSVDB')
+
+csvToDb('testFiles\\JsonCSV.csv', 'JsonCSVDB')
+
+dbToCsv('JsonCSVDB.db', 'testFiles\\JsonCSVDB')
